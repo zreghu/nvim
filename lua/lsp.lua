@@ -10,8 +10,7 @@ lspconfig.lua_ls.setup({
   on_attach = on_attach,
   flags = lsp_flags,
   capabilities = capabilities,
-  settings = {
-    Lua = {
+  settings = { Lua = {
       runtime = {
         -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
         version = 'LuaJIT',
@@ -37,12 +36,20 @@ lspconfig.clangd.setup {
   capabilities = capabilities
 }
 
-lspconfig.tsserver.setup {
-  capabilities = capabilities
-}
-
 lspconfig.marksman.setup{
   capabilities = capabilities
 }
+
+lspconfig.ocamllsp.setup{
+  capabilities = capabilities
+}
+
+require('lspconfig')['hls'].setup{
+  filetypes = {'haskell', 'lhaskell', 'cabal'},
+  capabilities = capabilities,
+}
+
+vim.cmd[[let g:opamshare = substitute(system('opam var share'),'\n$','','''')]]
+vim.cmd[[execute "set rtp+=" . g:opamshare . "/merlin/vim"]]
 
 -- TODO: add more lsp servers

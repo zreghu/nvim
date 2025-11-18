@@ -1,6 +1,5 @@
 return {
   { "williamboman/mason.nvim", build = ":MasonUpdate", lazy = false, opts = {} },
-  { "williamboman/mason-lspconfig.nvim", lazy = false, opts = {} },
   { "neovim/nvim-lspconfig",
     lazy = false,
     event = { "BufReadPost", "BufNewFile" },

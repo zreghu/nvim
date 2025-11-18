@@ -43,7 +43,11 @@ require("lazy").setup({
     }
   },
   { "junegunn/limelight.vim" },
-  { "iamcco/markdown-preview.nvim", build = function() vim.fn["mkdp#util#install"]() end, ft = "markdown" },
+  { "lervag/vimtex",
+    -- init = function()
+     -- Use init for configuration, don't use the more common "config".
+    -- end
+  },
   { import = "plugins" }
 })
 
@@ -67,6 +71,7 @@ vim.o.number = true           -- see line numbers in gutter on the left
 vim.opt.termguicolors = true
 vim.cmd[[set textwidth=120]]  -- set text width to 120
 vim.cmd[[colorscheme tokyonight-storm]]
+vim.opt.textwidth = 100
 
 -- Fancy Diagnostic Icons
 local signs = { Error = "", Warn = "", Hint = "", Info = "" }
@@ -114,4 +119,15 @@ vim.keymap.set('n', '<leader>zz', '<cmd>ZenMode<cr>', {})
 
 -- Markdown Preview
 vim.keymap.set("n", "<leader>mm", "<cmd>MarkdownPreviewToggle<cr>", {silent = true, noremap = true})
+
+-- Vimtex Compiler options
+vim.g.vimtex_compiler_latexmk = {
+  options = {
+    '-verbose',
+    '-shell-escape',
+    '-file-line-error',
+    '-synctex=1',
+    '-interaction=nonstopmode',
+  }
+}
 
