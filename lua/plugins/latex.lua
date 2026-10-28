@@ -18,9 +18,9 @@ return {
         options = { "-verbose", "-file-line-error", "-synctex=1", "-interaction=nonstopmode" },
       }
       vim.g.vimtex_view_automatic = 0
-      -- Use the system's current PDF application (Firefox on this machine).
+      -- Use the system's default PDF application.
       vim.g.vimtex_view_method = "general"
-      vim.g.vimtex_view_general_viewer = "xdg-open"
+      vim.g.vimtex_view_general_viewer = vim.fn.has("mac") == 1 and "open" or "xdg-open"
     end,
     config = function()
       local commands = {

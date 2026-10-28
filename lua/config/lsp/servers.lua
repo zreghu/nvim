@@ -8,6 +8,15 @@ if vim.env.PATH and vim.env.PATH ~= "" then
   hls_path = hls_path .. ":" .. vim.env.PATH
 end
 
+-- rustup installs rust-analyzer in different places on macOS and Arch Linux.
+local rust_analyzer = vim.fn.exepath("rust-analyzer")
+if rust_analyzer == "" then
+  rust_analyzer = vim.fn.expand("~/.cargo/bin/rust-analyzer")
+  if vim.fn.executable(rust_analyzer) == 0 then
+    rust_analyzer = "/usr/lib/rustup/bin/rust-analyzer"
+  end
+end
+
 return {
   basedpyright = {},
   clangd = {},
@@ -43,7 +52,7 @@ return {
     },
   },
   rust_analyzer = {
-    cmd = { "/usr/lib/rustup/bin/rust-analyzer" },
+    cmd = { rust_analyzer },
     settings = {
       ["rust-analyzer"] = {
         check = { command = "clippy" },
