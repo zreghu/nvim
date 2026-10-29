@@ -11,11 +11,15 @@ return {
         vim.env.PATH = bin .. ":" .. (vim.env.PATH or "")
       end
     end,
-    config = function()
-      local ts = require("nvim-treesitter")
-      local languages = {
+    opts = {
+      -- install.sh reads this list to finish parser builds before first use.
+      languages = {
         "c", "cpp", "haskell", "lua", "markdown", "markdown_inline", "python", "rust", "vim", "vimdoc",
-      }
+      },
+    },
+    config = function(_, opts)
+      local ts = require("nvim-treesitter")
+      local languages = opts.languages
       ts.setup({ install_dir = vim.fn.stdpath("data") .. "/site" })
       -- This is a no-op for installed parsers. Mason supplies the CLI.
       if vim.fn.executable("tree-sitter") == 1 then
