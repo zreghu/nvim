@@ -26,7 +26,7 @@ Mason installs the language servers, formatters, and linters.
 
 Options:
   --no-rust     Skip rustup, rust-analyzer, clippy, and rustfmt
-  --no-haskell  Skip GHCup, GHC, and haskell-language-server
+  --no-haskell  Skip GHCup and its recommended GHC, cabal, Stack, and HLS
   --no-tex      Skip TeX Live (latexmk, xelatex, chktex)
   -h, --help    Show this help
 EOF
@@ -159,23 +159,25 @@ setup_rust() {
 setup_haskell() {
   local ghcup="$HOME/.ghcup/bin/ghcup"
   if [ ! -x "$ghcup" ]; then
-    log "Installing GHCup, GHC, cabal, and haskell-language-server"
+    log "Installing GHCup"
+    # Install GHCup alone; the loop below installs each tool the same way on every run.
     curl --proto '=https' --tlsv1.2 -sSf https://get-ghcup.haskell.org |
       BOOTSTRAP_HASKELL_NONINTERACTIVE=1 \
-      BOOTSTRAP_HASKELL_INSTALL_HLS=1 \
+      BOOTSTRAP_HASKELL_MINIMAL=1 \
       BOOTSTRAP_HASKELL_ADJUST_BASHRC=1 \
       sh
-    return
+  else
+    log "Upgrading GHCup"
+    "$ghcup" upgrade
   fi
-  # The config runs HLS from ~/.ghcup/bin, so make sure GHCup installed it.
-  if [ ! -x "$HOME/.ghcup/bin/ghc" ]; then
-    log "Installing GHC with GHCup"
-    "$ghcup" install ghc --set recommended
-  fi
-  if [ ! -x "$HOME/.ghcup/bin/haskell-language-server-wrapper" ]; then
-    log "Installing haskell-language-server with GHCup"
-    "$ghcup" install hls --set recommended
-  fi
+
+  # The config runs HLS from ~/.ghcup/bin. GHCup's recommended HLS supports its recommended GHC.
+  log "Installing and selecting the recommended GHC, cabal, Stack, and HLS"
+  local tool
+  for tool in ghc cabal stack hls; do
+    "$ghcup" install "$tool" recommended
+    "$ghcup" set "$tool" recommended
+  done
 }
 
 backup_existing() {
