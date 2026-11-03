@@ -14,17 +14,25 @@ return {
       vim.g.vimtex_compiler_method = "latexmk"
       vim.g.vimtex_compiler_latexmk_engines = { _ = "-xelatex" }
       vim.g.vimtex_compiler_latexmk = {
-        continuous = 0,
+        continuous = 1,
         options = { "-verbose", "-file-line-error", "-synctex=1", "-interaction=nonstopmode" },
       }
       vim.g.vimtex_view_automatic = 0
-      -- Use the system's default PDF application.
+      -- Use the system's current PDF application (Firefox on this machine).
       vim.g.vimtex_view_method = "general"
-      vim.g.vimtex_view_general_viewer = vim.fn.has("mac") == 1 and "open" or "xdg-open"
+      vim.g.vimtex_view_general_viewer = "xdg-open"
     end,
     config = function()
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "VimtexEventInitPost",
+        group = vim.api.nvim_create_augroup("user-vimtex-autocompile", { clear = true }),
+        callback = function()
+          vim.cmd("VimtexCompile!")
+        end,
+      })
+
       local commands = {
-        c = { "VimtexCompile", "Compile document" },
+        c = { "VimtexCompile!", "Start continuous compilation" },
         v = { "VimtexView", "View PDF" },
         e = { "VimtexErrors", "Compilation errors" },
         t = { "VimtexTocToggle", "Table of contents" },
